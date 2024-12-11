@@ -57,7 +57,8 @@
 
         let contactlist = ""
      // jeg bytta ut den gamle koden men den nye koden som gjør e-post klikkbar  
-       //CONTACTS
+       
+     //CONTACTS
 contacts.map((contact, index) => {
     contactlist += `<article>
         <p><strong>${contact.lastname}, ${contact.firstname}</strong><br />
@@ -95,7 +96,7 @@ document.getElementById("contactlist").innerHTML = contactlist;
 
         // Dynamisk generering av oppgavelisten
 let todoHTML = "";
-
+// fjerna hard koden fra linje (42-49) å bytte med den koden her
 todos.forEach(todo => {
     todoHTML += `<li>
         <span class="task-text">${todo.text}</span>
@@ -105,10 +106,60 @@ todos.forEach(todo => {
 
 document.getElementById("todolist").innerHTML = todoHTML;
 
+// Legg til ny oppgave
+const taskInput = document.getElementById("task"); // Referanse til input-feltet
+const saveTaskButton = document.getElementById("savetask"); // Referanse til "Lagre"-knappen
+
+// Når "Lagre"-knappen klikkes
+saveTaskButton.addEventListener("click", () => {
+    const newTaskText = taskInput.value; // Hent tekst fra input-feltet
+    if (newTaskText.trim() === "") { // Sjekk om feltet er tomt
+        alert("Oppgavetekst kan ikke være tom!"); // Vis advarsel hvis tomt
+        return;
+    }
+     // Legg til en ny oppgave i `todos`-arrayet
+    todos.push({ text: newTaskText, status: "To do" });
+      // Generer oppdatert oppgaveliste
+    let todoHTML = "";
+    todos.forEach(todo => {
+        todoHTML += `<li>
+            <span class="task-text">${todo.text}</span>
+            <span class="task-status task-status-${todo.status.toLowerCase()}">${todo.status}</span>
+        </li>`;
+    });
+     
+    // Oppdater oppgavelisten i HTML
+    document.getElementById("todolist").innerHTML = todoHTML;
+
+     // Tøm input-feltet etter lagring
+    taskInput.value = "";
+});
+
+
 
 
         
         //CLOCK
+
+    // Eksisterende script-innhold (som "TODOS" og "CONTACTS")
+
+    // Digital klokke-funksjon
+    function startClock() {
+        const clockElement = document.getElementById("clock"); // Henter klokkens HTML-element
+        setInterval(() => {
+            const now = new Date(); // Hent dagens dato og tid
+            const hours = now.getHours().toString().padStart(2, "0"); // Timer med ledende null
+            const minutes = now.getMinutes().toString().padStart(2, "0"); // Minutter med ledende null
+            const seconds = now.getSeconds().toString().padStart(2, "0"); // Sekunder med ledende null
+            clockElement.textContent = `${hours}:${minutes}:${seconds}`; // Oppdater HTML-teksten
+        }, 1000); // Oppdater hvert sekund
+    }
+
+    // Start klokken
+    startClock();
+
+
+
         
     </script>
 </body>
