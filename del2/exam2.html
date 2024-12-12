@@ -110,14 +110,15 @@ document.getElementById("todolist").innerHTML = todoHTML;
 const taskInput = document.getElementById("task"); // Referanse til input-feltet
 const saveTaskButton = document.getElementById("savetask"); // Referanse til "Lagre"-knappen
 
-// Når "Lagre"-knappen klikkes
+// Når brukeren klikker på "Lagre"-knappen, skal denne funksjonen kjøre
 saveTaskButton.addEventListener("click", () => {
-    const newTaskText = taskInput.value; // Hent tekst fra input-feltet
-    if (newTaskText.trim() === "") { // Sjekk om feltet er tomt
-        alert("Oppgavetekst kan ikke være tom!"); // Vis advarsel hvis tomt
+    const newTaskText = taskInput.value; // Henter tekst fra input-feltet
+    if (newTaskText.trim() === "") { // Sjekker om feltet er tomt
+        alert("Oppgavetekst kan ikke være tom!"); // Viser advarsel hvis tomt
         return;
     }
      // Legg til en ny oppgave i `todos`-arrayet
+     // Oppgaven lagres som et objekt med tekst og status.
     todos.push({ text: newTaskText, status: "To do" });
       // Generer oppdatert oppgaveliste
     let todoHTML = "";
@@ -147,12 +148,12 @@ saveTaskButton.addEventListener("click", () => {
     function startClock() {
         const clockElement = document.getElementById("clock"); // Henter klokkens HTML-element
         setInterval(() => {
-            const now = new Date(); // Hent dagens dato og tid
+            const now = new Date(); // Henter dagens dato og tid
             const hours = now.getHours().toString().padStart(2, "0"); // Timer med ledende null
             const minutes = now.getMinutes().toString().padStart(2, "0"); // Minutter med ledende null
             const seconds = now.getSeconds().toString().padStart(2, "0"); // Sekunder med ledende null
-            clockElement.textContent = `${hours}:${minutes}:${seconds}`; // Oppdater HTML-teksten
-        }, 1000); // Oppdater hvert sekund
+            clockElement.textContent = `${hours}:${minutes}:${seconds}`; // Oppdaterer HTML-teksten
+        }, 1000); // Oppdaterer hvert sekund
     }
      
     //  Kilde: https://developer.mozilla.org/en-US/docs/Web/API/Date

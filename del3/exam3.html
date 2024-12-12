@@ -34,58 +34,110 @@
     
 
     <script>
-        //Configure canvas
-        const canvas = document.getElementById("colorspace")
-        canvas.width = 1000
-        canvas.height = 100
-        const ctx = canvas.getContext("2d")
 
-        /* --- YOUR FUNCTIONALITY AND CODE GOES HERE --- */
-        // Array for å lagre fargene
-let colorArray = [];
+         // Configure canvas
+const canvas = document.getElementById("colorspace"); // Henter canvas-elementet fra DOM
+canvas.width = 1000; // Setter bredden på canvas til 1000 piksler
+canvas.height = 150; // Setter høyden på canvas til 150 piksler
+const ctx = canvas.getContext("2d"); // Henter 2D-tegningskonteksten for canvas (for å tegne firkanter, tekst osv.)
 
-// Funksjon for å generere en tilfeldig farge i hex-format
-// Kilde: https://www.w3schools.com/js/js_random.asp
-function generateRandomColor() {
-    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
-    return randomColor; // Returnerer fargen i formatet #RRGGBB
+// Oppretter et array for å lagre de genererte fargene
+let farger = []; // Dette arrayet vil holde på hex-fargekodene som vises på canvas
+
+// Variabel for å kontrollere om firkanter skal tegnes
+let skalTegnes = true; // Denne brukes til å styre om oppdateringsfunksjonen skal tegne firkanter eller ikke
+
+// Funksjon for å generere en tilfeldig hex-farge
+function genererTilfeldigFarge() {
+    const bokstaver = '0123456789ABCDEF'; // Gyldige tegn for hex-farger
+    let farge = '#'; // Starter hver fargekode med #
+    for (let i = 0; i < 6; i++) { // En hex-farge består av 6 tegn (f.eks. #RRGGBB)
+        farge += bokstaver[Math.floor(Math.random() * 16)]; // Velger et tilfeldig tegn og legger det til
+    }
+    return farge; // Returnerer den genererte fargen som en streng
 }
 
-// Funksjon for å tegne farger på canvas
-function drawColors() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Rens canvas før tegning
-    const squareWidth = canvas.width / 10; // Bredde på hver rute (100 px ved 10 ruter)
-    colorArray.forEach((color, index) => {
-        ctx.fillStyle = color; // Sett fargen
-        ctx.fillRect(index * squareWidth, 0, squareWidth, canvas.height); // Tegn en fargerute
+// Funksjon for å oppdatere canvas basert på innholdet i farge-arrayet
+function oppdaterCanvas() {
+    // Rydder canvas ved å fjerne alt tidligere innhold
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!skalTegnes) {
+        // Hvis firkanter ikke skal tegnes, avslutter vi funksjonen her
+        return;
+    }
+
+    // Variabler for størrelse og plassering av hver firkant
+    const firkantBredde = canvas.width / 10; // Bredden på hver firkant (deler canvas-bredden i 10 like deler)
+    const firkantHøyde = 100; // Høyden på hver firkant (fastsatt til 100 piksler)
+
+    // Itererer gjennom hver farge i arrayet
+    farger.forEach((farge, indeks) => {
+        // Tegner selve fargefirkanten
+        ctx.fillStyle = farge; // Setter fargen til firkanten
+        ctx.fillRect(indeks * firkantBredde, 25, firkantBredde, firkantHøyde); // Tegner firkanten fra startposisjon
+
+        // Tegner en hvit boks for fargekoden over firkanten
+        ctx.fillStyle = "#FFFFFF"; 
+        ctx.fillRect((indeks + 1) * firkantBredde - 100, 15, 70, 35); 
+
+        // Legger til tekst (fargekode) i den hvite boksen
+        ctx.fillStyle = "#000000"; 
+        ctx.font = "13px Arial"; 
+        ctx.textAlign = "center"; 
+        ctx.fillText(farge, (indeks + 1) * firkantBredde - 65, 40); 
+
+        // Tegner en liten hvit boks for nummeret under firkanten
+        ctx.fillStyle = "#FFFFFF"; 
+        ctx.fillRect((indeks + 1) * firkantBredde - 20, firkantHøyde + 5, 30, 20); 
+
+        // Legger til nummer-tekst i den lille hvite boksen
+        ctx.fillStyle = "#000000"; // Setter tekstfargen til svart
+        ctx.font = "12px Arial"; 
+        ctx.textAlign = "center"; 
+        ctx.fillText(indeks + 1, (indeks + 1) * firkantBredde - 10, firkantHøyde + 20); // Plasserer teksten midt i boksen
     });
 }
 
-// EventListener for "Legg til en farge"-knappen
-document.getElementById("addColor").addEventListener("click", () => {
-    if (colorArray.length >= 10) {
-        console.log("Maksimalt antall farger er nådd."); // Begrens til maks 10 farger
-        return;
+// Funksjon som kjøres når brukeren klikker på "Legg til en farge"-knappen
+function leggTilFarge() {
+    if (farger.length < 10) { // Sjekker om antall farger i arrayet er mindre enn 10
+        const nyFarge = genererTilfeldigFarge(); // Genererer en ny tilfeldig farge
+        farger.push(nyFarge); // Legger den nye fargen til i arrayet
+        skalTegnes = true; // Tillater tegning av firkanter
+        oppdaterCanvas(); // Oppdaterer canvas for å vise den nye fargen
+        console.log(farger); // Logger fargene i arrayet til konsollen
+    } else {
+        alert("Du kan ikke legge til flere enn 10 farger!"); // Viser en advarsel hvis maks antall farger er nådd
     }
-    const newColor = generateRandomColor(); // Generer en ny tilfeldig farge
-    colorArray.push(newColor); // Legg fargen til arrayet
-    drawColors(); // Tegn oppdatert canvas
-    console.log(colorArray); // Skriv ut oppdatert array i konsollen
-});
+}
+
+// Funksjon for å tilbakestille farger og canvas
+function tilbakestillFarger() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Tømmer canvas
+    farger = []; // Fjerner alle farger fra arrayet
+    console.log("Alle farger fjernet. Nåværende array:", farger); // Logger et tomt array for å bekrefte tilbakestillingen
+}
+
+// Legger til event listeners for knappene
+document.getElementById("addColor").addEventListener("click", leggTilFarge); // Kobler "Legg til en farge"-knappen til funksjonen
+document.getElementById("emptyArray").addEventListener("click", tilbakestillFarger); // Kobler "Tilbakestill"-knappen til funksjonen
+
+// Funksjon for kontinuerlig oppdatering (brukes for dynamiske endringer)
+function renderCanvas() {
+    oppdaterCanvas(); // Tegner opp canvas
+    requestAnimationFrame(renderCanvas); // Kaller denne funksjonen igjen for neste animasjonsramme
+}
 
 
+renderCanvas();
+
+// kilder
+// https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame 
+// https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
         
-        
-
-        //requestAnimationFrame
-        const requestAnimationFrame = window.requestAnimationFrame || window.msRequestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame
-        function renderCanvas() {
-            
-            requestAnimationFrame(renderCanvas)
-        }
-
-        //Initial running of drawing canvas
-        renderCanvas()
     </script>
 </body>
 </html>
+
+ 
