@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam </title>
+    <link href="exam3.css" rel="stylesheet" media="all">
+</head>
+<body>
+    <main>
+        <h1>Fargepaletten</h1>
+        <canvas id="colorspace"></canvas>
+        <nav>
+            <button id="addColor">Legg till en farge</button>
+            <button id="emptyArray">Tilbakestill fargene</button>
+            <button id="generateAll">Generer 10 nye farger</button>
+        </nav>
+        <h2>Endre farger:</h2>
+        <section>
+            <p>Bytt ut fargen i rute <select id="colorSquareIndex">
+                <option value="0">1</option>
+                <option value="1">2</option>
+                <option value="2">3</option>
+                <option value="3">4</option>
+                <option value="4">5</option>
+                <option value="5">6</option>
+                <option value="6">7</option>
+                <option value="7">8</option>
+                <option value="8">9</option>
+                <option value="9">10</option>
+            </select> med #<input type="text" id="newColor" /> <button id="saveNewColor">Lagre ny farge</button></p>
+        </section>
+    </main>
+    
+
+    <script>
+        //Configure canvas
+        const canvas = document.getElementById("colorspace")
+        canvas.width = 1000
+        canvas.height = 100
+        const ctx = canvas.getContext("2d")
+
+        /* --- YOUR FUNCTIONALITY AND CODE GOES HERE --- */
+        // Array for å lagre fargene
+let colorArray = [];
+
+// Funksjon for å generere en tilfeldig farge i hex-format
+// Kilde: https://www.w3schools.com/js/js_random.asp
+function generateRandomColor() {
+    const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+    return randomColor; // Returnerer fargen i formatet #RRGGBB
+}
+
+// Funksjon for å tegne farger på canvas
+function drawColors() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Rens canvas før tegning
+    const squareWidth = canvas.width / 10; // Bredde på hver rute (100 px ved 10 ruter)
+    colorArray.forEach((color, index) => {
+        ctx.fillStyle = color; // Sett fargen
+        ctx.fillRect(index * squareWidth, 0, squareWidth, canvas.height); // Tegn en fargerute
+    });
+}
+
+// EventListener for "Legg til en farge"-knappen
+document.getElementById("addColor").addEventListener("click", () => {
+    if (colorArray.length >= 10) {
+        console.log("Maksimalt antall farger er nådd."); // Begrens til maks 10 farger
+        return;
+    }
+    const newColor = generateRandomColor(); // Generer en ny tilfeldig farge
+    colorArray.push(newColor); // Legg fargen til arrayet
+    drawColors(); // Tegn oppdatert canvas
+    console.log(colorArray); // Skriv ut oppdatert array i konsollen
+});
+
+
+        
+        
+
+        //requestAnimationFrame
+        const requestAnimationFrame = window.requestAnimationFrame || window.msRequestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame
+        function renderCanvas() {
+            
+            requestAnimationFrame(renderCanvas)
+        }
+
+        //Initial running of drawing canvas
+        renderCanvas()
+    </script>
+</body>
+</html>
